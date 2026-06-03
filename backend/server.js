@@ -1,27 +1,24 @@
 // backend/server.js – Entry point ZuppaZuppa Backend
 require('dotenv').config();
-const express    = require('express');
-const cors       = require('cors');
-const path       = require('path');
-const fs         = require('fs');
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
+const fs = require('fs');
 const compression = require('compression'); // BUG-018 FIX: kompresi response gzip/brotli
 
-const app  = express();
+const app = express();
 const PORT = process.env.PORT || 3000;
 
 // ---- BUG-018 FIX: Aktifkan kompresi gzip ----
 app.use(compression());
 
 // ---- Middleware ----
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',')
+  : ['http://localhost:3000', 'http://localhost:5500'];
+
 app.use(cors({
-  origin: [
-    `http://localhost:${PORT}`,
-    `http://127.0.0.1:${PORT}`,
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
-    'http://localhost:5500',
-    'http://127.0.0.1:5500',
-  ],
+  origin: allowedOrigins,
   credentials: true,
 }));
 app.use(express.json());

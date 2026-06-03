@@ -240,6 +240,79 @@
     .section-title.visible::after {
       width: 56px;
     }
+
+    /* ===== FLOATING WHATSAPP BUTTON ===== */
+    .wa-float {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 9000;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .wa-float-tooltip {
+      background: #fff;
+      color: #1a1a1a;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 500;
+      padding: 7px 14px;
+      border-radius: 20px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.14);
+      white-space: nowrap;
+      opacity: 0;
+      transform: translateX(8px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      pointer-events: none;
+    }
+
+    .wa-float:hover .wa-float-tooltip {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .wa-float-btn {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: #25D366;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(37, 211, 102, 0.45);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      flex-shrink: 0;
+    }
+
+    .wa-float-btn i {
+      font-size: 1.75rem;
+      color: #fff;
+    }
+
+    .wa-float:hover .wa-float-btn {
+      transform: scale(1.1);
+      box-shadow: 0 6px 28px rgba(37, 211, 102, 0.6);
+    }
+
+    /* Pulse ring animation */
+    .wa-float-btn::before {
+      content: '';
+      position: absolute;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: rgba(37, 211, 102, 0.4);
+      animation: wa-pulse 2s ease-out infinite;
+    }
+
+    @keyframes wa-pulse {
+      0%   { transform: scale(1); opacity: 0.7; }
+      70%  { transform: scale(1.6); opacity: 0; }
+      100% { transform: scale(1.6); opacity: 0; }
+    }
   </style>
 </head>
 
@@ -382,6 +455,19 @@
       </div>
     </div>
   </div>
+
+  <!-- ===== FLOATING WHATSAPP BUTTON ===== -->
+  <a href="https://wa.me/628139840573?text=Halo%20ZuppaZuppa%2C%20saya%20ingin%20memesan"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="wa-float"
+    id="waFloat"
+    aria-label="Chat via WhatsApp">
+    <span class="wa-float-tooltip">Chat via WhatsApp</span>
+    <div class="wa-float-btn">
+      <i class="fab fa-whatsapp"></i>
+    </div>
+  </a>
 
   <script src="../js/navbar.js"></script>
   <script src="../js/main.js"></script>
