@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZuppaZuppa – Warmth in Every Bowl</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    /* ===== SCROLL ANIMATIONS ===== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-40px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal-left.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(40px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal-right.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .reveal-delay-1 {
+      transition-delay: 0.1s;
+    }
+
+    .reveal-delay-2 {
+      transition-delay: 0.2s;
+    }
+
+    .reveal-delay-3 {
+      transition-delay: 0.3s;
+    }
+
+    .reveal-delay-4 {
+      transition-delay: 0.4s;
+    }
+
+    /* ===== PROMO CARD INTERAKTIF ===== */
+    .konten-card {
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .konten-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 32px rgba(107, 30, 30, 0.2);
+    }
+
+    .konten-card::after {
+      content: 'Lihat Detail →';
+      display: block;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--maroon);
+      font-weight: 600;
+      padding: 8px 0 4px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .konten-card:hover::after {
+      opacity: 1;
+    }
+
+    /* ===== PROMO MODAL ===== */
+    .promo-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(42, 33, 24, 0.75);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      backdrop-filter: blur(4px);
+    }
+
+    .promo-modal-overlay.open {
+      display: flex;
+    }
+
+    .promo-modal-card {
+      background: var(--white);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 560px;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      animation: modalPop 0.35s cubic-bezier(.34, 1.56, .64, 1) forwards;
+    }
+
+    @keyframes modalPop {
+      from {
+        opacity: 0;
+        transform: scale(0.85);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .promo-modal-img {
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+      border-radius: 20px 20px 0 0;
+      display: block;
+    }
+
+    .promo-modal-img-fallback {
+      width: 100%;
+      height: 180px;
+      background: var(--cream-dark);
+      border-radius: 20px 20px 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+    }
+
+    .promo-modal-body {
+      padding: 24px 28px 28px;
+    }
+
+    .promo-modal-body h3 {
+      margin-bottom: 12px;
+      color: var(--maroon-dark);
+    }
+
+    .promo-modal-body p {
+      color: var(--text-mid);
+      line-height: 1.7;
+    }
+
+    .promo-modal-close {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      background: rgba(255, 255, 255, 0.9);
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      transition: background 0.2s;
+      z-index: 2;
+    }
+
+    .promo-modal-close:hover {
+      background: var(--cream-dark);
+    }
+
+    /* ===== WHY CARD HOVER ===== */
+    .why-card {
+      transition: transform 0.3s ease;
+      padding: 24px 16px;
+      border-radius: var(--radius-md);
+    }
+
+    .why-card:hover {
+      transform: translateY(-6px);
+    }
+
+    .why-icon {
+      transition: transform 0.3s ease;
+    }
+
+    .why-card:hover .why-icon {
+      transform: scale(1.1) rotate(-5deg);
+    }
+
+    /* ===== MENU CARD PULSE ===== */
+    .menu-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .menu-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 32px rgba(107, 30, 30, 0.18);
+    }
+
+    /* ===== HERO FLOAT ===== */
+    .hero-img-box {
+      animation: float 4s ease-in-out infinite;
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-12px);
+      }
+    }
+
+    /* ===== SECTION TITLE UNDERLINE ANIMATE ===== */
+    .section-title::after {
+      transition: width 0.5s ease;
+      width: 0;
+    }
+
+    .section-title.visible::after {
+      width: 56px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="../assets/logo-soup.png" alt="ZuppaZuppa Logo" class="nav-logo-img" />
+        ZuppaZuppa
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="active">Home</a></li>
+        <li><a href="menu.html">Menu</a></li>
+        <li><a href="about.html">About Us</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="login.html" class="btn-outline">Login</a>
+        <a href="https://wa.me/628139840573?text=Halo%20ZuppaZuppa%2C%20saya%20ingin%20memesan" target="_blank"
+          class="btn-primary">Order Now</a>
+      </div>
+    </div>
+    <div class="menu-toggle">☰</div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero" id="heroSection">
+    <div class="hero-bg"></div>
+    <div class="hero-bg-image"></div>
+    <div class="hero-inner">
+      <div class="hero-text fade-in">
+        <h1 id="heroJudul">ZuppaZuppa</h1>
+        <p id="heroIsi">Soup Cream lembut dengan topping pilihan – Irisan Ayam, Jagung segar, dan Daging Asap yang
+          creamy menghangatkan harimu.</p>
+        <a href="https://wa.me/628139840573?text=Halo%20ZuppaZuppa%2C%20saya%20ingin%20memesan" target="_blank"
+          class="btn-primary">Order Now</a>
+      </div>
+      <div class="hero-image fade-in delay-1">
+        <div class="hero-img-box" id="heroImgBox">
+          <img src="../assets/hero-placeholder.jpg" alt="ZuppaZuppa" onerror="this.style.display='none'" />
+          <div class="hero-img-fallback">🍲</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DIVIDER ===== -->
+  <div class="section-divider"></div>
+
+  <!-- ===== TOP MENU ===== -->
+  <section class="section top-menu">
+    <div class="container">
+      <h2 class="section-title reveal">Top Menu</h2>
+      <div class="menu-grid" id="topMenuGrid"></div>
+      <div class="text-center mt-lg reveal">
+        <a href="menu.html" class="btn-primary">Browse Menu</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PROMO (sekarang di atas Why Us) ===== -->
+  <section class="section promo-section" id="promoSection" style="display:none;">
+    <div class="container">
+      <h2 class="section-title reveal">Promo</h2>
+      <div class="promo-grid" id="promoGrid"></div>
+    </div>
+  </section>
+
+  <!-- ===== WHY US (sekarang di bawah Promo) ===== -->
+  <section class="section why-us">
+    <div class="container">
+      <h2 class="section-title reveal">Our Service</h2>
+      <div class="why-grid" id="whyGrid"></div>
+    </div>
+  </section>
+
+  <!-- ===== INFO ===== -->
+  <section class="section info-section" id="infoSection" style="display:none;">
+    <div class="container">
+      <h2 class="section-title reveal">Info</h2>
+      <div class="info-grid" id="infoGrid"></div>
+    </div>
+  </section>
+
+  <!-- ===== REVIEWER ===== -->
+  <section class="section reviewer">
+    <div class="container">
+      <h2 class="section-title reveal">Reviewer</h2>
+      <div class="review-slider-wrap">
+        <button class="slider-btn prev" id="prevBtn">&#8592;</button>
+        <div class="review-slider" id="reviewSlider"></div>
+        <button class="slider-btn next" id="nextBtn">&#8594;</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MAPS CTA ===== -->
+  <section class="section maps-cta">
+    <div class="maps-overlay">
+      <div id="map" class="map-embed">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d21665.333742760624!2d106.85930787533803!3d-6.305656732376951!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69ed007df5d2b9%3A0x261f18d1c081fd02!2sZuppa%20Zuppa!5e1!3m2!1sid!2sid!4v1778228129970!5m2!1sid!2sid"
+          width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+      <div class="maps-info">
+        <a href="https://maps.app.goo.gl/KPvj1hq7yoBUccd48" target="_blank" class="btn-primary">Get Direction</a>
+        <p>Open : 15.00–23.00</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <span class="footer-brand">ZuppaZuppa</span>
+      <div class="footer-hours">
+        <strong>Operating Hours</strong><br />(15.00 – 23.00)
+      </div>
+      <div class="footer-social">
+        <div class="social-icons">
+          <a href="https://wa.me/628139840573" target="_blank" aria-label="WhatsApp" class="social-link">
+            <i class="fab fa-whatsapp"></i>
+          </a>
+        </div>
+        <p>&copy; 2026 ZuppaZuppa</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== PROMO MODAL ===== -->
+  <div class="promo-modal-overlay" id="promoModal">
+    <div class="promo-modal-card">
+      <button class="promo-modal-close" onclick="closePromoModal()">✕</button>
+      <div id="promoModalImgWrap"></div>
+      <div class="promo-modal-body">
+        <h3 id="promoModalTitle"></h3>
+        <p id="promoModalDesc"></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/navbar.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    // ===== SCROLL REVEAL =====
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(el => {
+        if (el.isIntersecting) {
+          el.target.classList.add('visible');
+          // Animasi underline section title
+          if (el.target.classList.contains('section-title')) {
+            el.target.classList.add('visible');
+          }
+        }
+      });
+    }, { threshold: 0.15 });
+
+    function initReveal() {
+      document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .section-title').forEach(el => {
+        observer.observe(el);
+      });
+    }
+    initReveal();
+
+    // ===== PROMO MODAL =====
+    document.addEventListener('click', function (e) {
+      const card = e.target.closest('.konten-card');
+      if (!card || !card.closest('#promoGrid')) return;
+      const title = card.querySelector('h4')?.innerText || 'Promo';
+      const desc = card.querySelector('p')?.innerText || '';
+      const img = card.querySelector('img');
+      document.getElementById('promoModalTitle').innerText = title;
+      document.getElementById('promoModalDesc').innerText = desc;
+      document.getElementById('promoModalImgWrap').innerHTML = img
+        ? `<img src="${img.src}" alt="${title}" class="promo-modal-img"/>`
+        : `<div class="promo-modal-img-fallback">🍽️</div>`;
+      document.getElementById('promoModal').classList.add('open');
+    });
+
+    function closePromoModal() {
+      document.getElementById('promoModal').classList.remove('open');
+    }
+    document.getElementById('promoModal').addEventListener('click', function (e) {
+      if (e.target === this) closePromoModal();
+    });
+
+    // ===== LOAD HERO =====
+    fetch('/api/konten?tipe=hero')
+      .then(r => r.json()).then(data => {
+        if (!data.data || !data.data.length) return;
+        const hero = data.data[0];
+        if (hero.judul) document.getElementById('heroJudul').textContent = hero.judul;
+        if (hero.isi) document.getElementById('heroIsi').textContent = hero.isi;
+        if (hero.gambar) {
+          document.getElementById('heroImgBox').innerHTML =
+            `<img src="/uploads/${hero.gambar}" alt="${hero.judul}" style="width:100%;height:100%;object-fit:cover;"/>`;
+        }
+      }).catch(() => { });
+
+    // ===== LOAD TOP MENU =====
+    fetch('/api/produk?is_top_menu=1&is_aktif=1')
+      .then(r => r.json()).then(data => {
+        const grid = document.getElementById('topMenuGrid');
+        if (!data.data || !data.data.length) { grid.innerHTML = '<p class="empty-msg">Menu segera hadir.</p>'; return; }
+        grid.innerHTML = data.data.map((p, i) => `
+        <div class="menu-card reveal reveal-delay-${Math.min(i + 1, 4)}">
+          <div class="menu-card-img">
+            ${p.gambar ? `<img src="/uploads/${p.gambar}" alt="${p.nama}"/>` : '<div class="img-fallback">🍲</div>'}
+          </div>
+          <div class="menu-card-body">
+            <h4>${p.nama}</h4>
+            <p>${p.deskripsi || ''}</p>
+            <span class="price">Rp ${Number(p.harga).toLocaleString('id-ID')}</span>
+          </div>
+        </div>`).join('');
+        // Observe newly added elements
+        document.querySelectorAll('.menu-card.reveal').forEach(el => observer.observe(el));
+      }).catch(() => {
+        const grid = document.getElementById('topMenuGrid');
+        ['Zuppa Soup Original', 'Zuppa Soup Spesial', 'Pasta Carbonara', 'Pasta Bolognese'].forEach(n => {
+          grid.innerHTML += `<div class="menu-card"><div class="menu-card-img"><div class="img-fallback">🍲</div></div><div class="menu-card-body"><h4>${n}</h4><p>Soup Cream dengan Topping Irisan Ayam, Jagung dan Daging Asap Yang Creamy</p><span class="price">Rp 22.000</span></div></div>`;
+        });
+      });
+
+    // ===== LOAD PROMO (di atas Why Us) =====
+    fetch('/api/konten?tipe=promo')
+      .then(r => r.json()).then(data => {
+        if (!data.data || !data.data.length) return;
+        document.getElementById('promoSection').style.display = '';
+        document.getElementById('promoGrid').innerHTML = data.data.map((k, i) => `
+        <div class="konten-card reveal reveal-delay-${Math.min(i + 1, 4)}">
+          ${k.gambar ? `<div class="konten-card-img"><img src="/uploads/${k.gambar}" alt="${k.judul}"/></div>` : ''}
+          <div class="konten-card-body">
+            <h4>${k.judul}</h4>
+            <p>${k.isi || ''}</p>
+          </div>
+        </div>`).join('');
+        document.querySelectorAll('#promoGrid .reveal').forEach(el => observer.observe(el));
+      }).catch(() => { });
+
+    // ===== LOAD WHY US (di bawah Promo) =====
+    fetch('/api/konten?tipe=why_us')
+      .then(r => r.json()).then(data => {
+        const grid = document.getElementById('whyGrid');
+        if (!data.data || !data.data.length) { grid.innerHTML = fallbackWhy(); initReveal(); return; }
+        grid.innerHTML = data.data.map((k, i) => `
+        <div class="why-card reveal reveal-delay-${Math.min(i + 1, 4)}">
+          <div class="why-icon">${k.gambar ? `<img src="/uploads/${k.gambar}" alt="${k.judul}"/>` : '⭐'}</div>
+          <h4>${k.judul}</h4>
+          <p>${k.isi || ''}</p>
+        </div>`).join('');
+        document.querySelectorAll('#whyGrid .reveal').forEach(el => observer.observe(el));
+      }).catch(() => { document.getElementById('whyGrid').innerHTML = fallbackWhy(); initReveal(); });
+
+    function fallbackWhy() {
+      return [
+        { icon: '🌿', title: 'Bahan Segar', desc: 'Dipilih setiap hari untuk menjaga kualitas terbaik.' },
+        { icon: '💰', title: 'Harga Terjangkau', desc: 'Makanan lezat dengan harga yang bersahabat.' },
+        { icon: '❤️', title: 'Rasa Otentik', desc: 'Resep turun-temurun yang dicintai banyak pelanggan.' },
+      ].map((i, idx) => `
+      <div class="why-card reveal reveal-delay-${idx + 1}">
+        <div class="why-icon">${i.icon}</div>
+        <h4>${i.title}</h4><p>${i.desc}</p>
+      </div>`).join('');
+    }
+
+    // ===== LOAD INFO =====
+    fetch('/api/konten?tipe=info')
+      .then(r => r.json()).then(data => {
+        if (!data.data || !data.data.length) return;
+        document.getElementById('infoSection').style.display = '';
+        document.getElementById('infoGrid').innerHTML = data.data.map(k => `
+        <div class="konten-card reveal">
+          ${k.gambar ? `<div class="konten-card-img"><img src="/uploads/${k.gambar}" alt="${k.judul}"/></div>` : ''}
+          <div class="konten-card-body"><h4>${k.judul}</h4><p>${k.isi || ''}</p></div>
+        </div>`).join('');
+        document.querySelectorAll('#infoGrid .reveal').forEach(el => observer.observe(el));
+      }).catch(() => { });
+
+    // ===== LOAD TESTIMONI =====
+    fetch('/api/testimoni')
+      .then(r => r.json()).then(data => {
+        const slider = document.getElementById('reviewSlider');
+        if (!data.data || !data.data.length) {
+          slider.innerHTML = '<div class="review-card"><p>Belum ada ulasan.</p></div>'; return;
+        }
+        slider.innerHTML = data.data.map(t => `
+        <div class="review-card">
+          <div class="stars">${'★'.repeat(t.bintang)}${'☆'.repeat(5 - t.bintang)}</div>
+          <p>"${t.isi}"</p>
+          <strong>– ${t.nama}</strong>
+        </div>`).join('');
+      }).catch(() => {
+        document.getElementById('reviewSlider').innerHTML = `
+        <div class="review-card"><div class="stars">★★★★★</div><p>"Zuppa Soup-nya enak banget!"</p><strong>– Budi S.</strong></div>
+        <div class="review-card"><div class="stars">★★★★★</div><p>"Harga terjangkau, porsi besar!"</p><strong>– Siti R.</strong></div>
+        <div class="review-card"><div class="stars">★★★★☆</div><p>"Recommended banget!"</p><strong>– Andi P.</strong></div>`;
+      });
+  </script>
+</body>
+
+</html>

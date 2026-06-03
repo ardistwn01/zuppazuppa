@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard Staff Marketing – ZuppaZuppa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../css/style.css"/>
+  <link rel="stylesheet" href="../css/dashboard.css"/>
+</head>
+<body class="dashboard-body">
+
+<div class="dashboard-wrap">
+  <aside class="sidebar">
+    <div class="sidebar-brand">ZuppaZuppa</div>
+    <nav class="sidebar-nav">
+      <a href="#konten"  class="s-link active" data-tab="konten">✏️ Kelola Konten</a>
+      <a href="#produk"  class="s-link" data-tab="produk">🍲 Update Produk</a>
+      
+    <div class="menu-toggle">☰</div></nav>
+    <div class="sidebar-footer">
+      <span id="sidebarUser">Staff Marketing</span>
+      <button onclick="logout()" class="btn-logout">Logout</button>
+    </div>
+  </aside>
+
+  <main class="dashboard-main">
+    <div class="dash-header">
+      <h1 id="dashTitle">Kelola Konten</h1>
+    </div>
+
+    <!-- TAB: KELOLA KONTEN -->
+    <section class="tab-panel active" id="tab-konten">
+      <div class="konten-layout">
+        <div class="konten-form-wrap">
+          <div class="konten-form-card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+              <h3 style="font-size:1rem;margin:0;" id="kontenFormTitle">Tambah Konten</h3>
+              <button class="btn-sm" onclick="resetKontenForm()">+ Baru</button>
+            </div>
+            <input type="hidden" id="editKontenId"/>
+            <div class="form-group">
+              <label>Upload Gambar (Opsional)</label>
+              <div class="konten-img-box" id="kontenImgBox" onclick="document.getElementById('kontenGambar').click()">
+                <div class="konten-img-placeholder" id="kontenImgPlaceholder">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3 7.5h18M3 12h18M3 16.5h18"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 7.5a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"/>
+                  </svg>
+                  <span>Klik untuk upload gambar</span>
+                </div>
+              </div>
+              <input type="file" id="kontenGambar" accept="image/*" onchange="previewKontenImg(this)" style="display:none;"/>
+            </div>
+            <div class="form-group">
+              <label>Judul Konten</label>
+              <input type="text" id="kontenJudul" placeholder="Misal: Promo Minggu Ini"/>
+            </div>
+            <div class="form-group">
+              <label>Tipe Konten</label>
+              <select id="kontenTipe">
+                <option value="hero">Hero / Profil (banner home)</option>
+                <option value="about_us">About Us (halaman Tentang Kami)</option>
+                <option value="promo">Promo (section promo)</option>
+                <option value="info">Info (section info)</option>
+                <option value="why_us">Our Service</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Deskripsi / Isi</label>
+              <textarea id="kontenIsi" placeholder="Tulis isi konten di sini..." rows="4"></textarea>
+            </div>
+            <div class="form-group">
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:500;">
+                <input type="checkbox" id="kontenAktif" checked style="accent-color:var(--maroon);width:16px;height:16px;"/>
+                Tampilkan di website (Aktif)
+              </label>
+            </div>
+            <div class="modal-actions">
+              <button class="btn-outline" onclick="resetKontenForm()">Reset</button>
+              <button class="btn-primary" onclick="saveKonten()">Simpan</button>
+            </div>
+          </div>
+        </div>
+        <div class="konten-list" id="kontenList">
+          <div class="loading-spinner">Memuat konten...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB: PRODUK -->
+    <section class="tab-panel" id="tab-produk">
+      <div class="panel-toolbar">
+        <button class="btn-primary btn-sm" onclick="openStaffProdukModal()">+ Tambah Menu</button>
+      </div>
+      <div class="menu-grid" id="staffProdukGrid"></div>
+    </section>
+
+    <!-- TAB: PESANAN -->
+
+  </main>
+</div>
+
+<!-- MODAL PESANAN -->
+</div>
+
+<!-- MODAL PRODUK --> 
+ <div class="modal-overlay" id="staffProdukModal" style="display:none;">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeModal('staffProdukModal')">✕</button>
+    <h3 id="staffProdukTitle">Tambah Menu</h3>
+    <input type="hidden" id="staffEditProdukId"/>
+    <div class="form-group"><input type="text" id="sProdukNama" placeholder="Nama Produk"/></div>
+    <div class="form-group"><textarea id="sProdukDeskripsi" placeholder="Deskripsi" rows="3"></textarea></div>
+    <div class="form-group"><input type="number" id="sProdukHarga" placeholder="Harga (Rp)"/></div>
+    <div class="form-group">
+      <select id="sProdukKategori">
+        <option>Soup</option><option>Pasta</option><option>Zuppa</option>
+        <option>Snack</option><option>Steak</option><option>Nasi Goreng</option>
+      </select>
+    </div>
+    <div class="form-group"><label><input type="checkbox" id="sProdukTopMenu"/> Tampilkan di Top Menu</label></div>
+    <div class="form-group"><input type="file" id="sProdukGambar" accept="image/*"/></div>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeModal('staffProdukModal')">Batal</button>
+      <button class="btn-primary" onclick="saveStaffProduk()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<script src="../js/main.js"></script>
+<script src="../js/dashboard.js"></script>
+<script>
+  requireAuth('staff_marketing');
+
+  // Tab navigation
+  document.querySelectorAll('.s-link').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const tab = link.dataset.tab;
+      document.querySelectorAll('.s-link').forEach(l => l.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      link.classList.add('active');
+      document.getElementById('tab-' + tab).classList.add('active');
+      document.getElementById('dashTitle').textContent = link.textContent.slice(3);
+      if (tab === 'konten')  loadKonten();
+      if (tab === 'produk')  loadStaffProduk();
+    });
+  });
+
+  // Initial
+  loadKonten();
+
+  // ---- KONTEN ----
+  const _placeholderSVG = `<div class="konten-img-placeholder">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3 7.5h18M3 12h18M3 16.5h18"/>
+      <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 7.5a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"/>
+    </svg>
+    <span>Klik untuk upload gambar</span>
+  </div>`;
+
+  function loadKonten() {
+    // Pakai /all supaya staff bisa lihat semua konten termasuk yg nonaktif
+    apiGet('/api/konten/all').then(data => {
+      const list = document.getElementById('kontenList');
+      if (!data.data || !data.data.length) {
+        list.innerHTML = '<p class="empty-msg">Belum ada konten. Isi form di kiri untuk menambahkan.</p>'; return;
+      }
+      list.innerHTML = data.data.map(k => `
+        <div class="konten-item" style="${!k.is_aktif ? 'opacity:0.55;' : ''}">
+          ${k.gambar
+            ? `<img src="/uploads/${k.gambar}" class="konten-thumb" alt="${k.judul}"/>`
+            : `<div class="konten-thumb-fallback"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3 7.5h18"/><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 7.5a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"/></svg></div>`}
+          <div class="konten-item-body">
+            <strong>${k.judul}</strong>
+            <div class="badges">
+              <small class="badge badge-${k.tipe}">${k.tipe}</small>
+              <small class="badge ${k.is_aktif ? 'approved' : 'rejected'}">${k.is_aktif ? 'aktif' : 'nonaktif'}</small>
+            </div>
+            <p>${(k.isi||'').slice(0,60)}${(k.isi||'').length > 60 ? '…' : ''}</p>
+          </div>
+          <div class="konten-item-actions">
+            <button class="btn-sm" onclick="editKonten(${JSON.stringify(k).replace(/"/g,'&quot;')})">Edit</button>
+            <button class="btn-sm btn-danger" onclick="deleteKonten(${k.id_konten})">Hapus</button>
+          </div>
+        </div>`).join('');
+    });
+  }
+
+  function editKonten(k) {
+    document.getElementById('editKontenId').value  = k.id_konten;
+    document.getElementById('kontenJudul').value   = k.judul;
+    document.getElementById('kontenTipe').value    = k.tipe;
+    document.getElementById('kontenIsi').value     = k.isi || '';
+    document.getElementById('kontenAktif').checked = !!k.is_aktif;
+    document.getElementById('kontenFormTitle').textContent = 'Edit Konten';
+    document.getElementById('kontenGambar').value  = ''; // BUG-FIX: reset file input
+    const box = document.getElementById('kontenImgBox');
+    box.innerHTML = k.gambar
+      ? `<img src="/uploads/${k.gambar}" alt="${k.judul}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"/>`
+      : _placeholderSVG;
+    // BUG-FIX: setelah innerHTML diganti, onclick attribute hilang — pasang ulang via JS
+    box.onclick = () => document.getElementById('kontenGambar').click();
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  function resetKontenForm() {
+    document.getElementById('editKontenId').value  = '';
+    document.getElementById('kontenJudul').value   = '';
+    document.getElementById('kontenIsi').value     = '';
+    document.getElementById('kontenTipe').value    = 'hero';
+    document.getElementById('kontenAktif').checked = true;
+    document.getElementById('kontenGambar').value  = '';
+    document.getElementById('kontenFormTitle').textContent = 'Tambah Konten';
+    const box = document.getElementById('kontenImgBox');
+    box.innerHTML = _placeholderSVG;
+    // BUG-FIX: restore onclick setelah innerHTML diganti
+    box.onclick = () => document.getElementById('kontenGambar').click();
+  }
+
+  function previewKontenImg(input) {
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        document.getElementById('kontenImgBox').innerHTML =
+          `<img src="${e.target.result}" alt="Preview" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"/>`;
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  async function saveKonten() {
+    const id    = document.getElementById('editKontenId').value;
+    const judul = document.getElementById('kontenJudul').value.trim();
+    if (!judul) { alert('Judul konten wajib diisi.'); return; }
+    const fd = new FormData();
+    fd.append('judul',    judul);
+    fd.append('tipe',     document.getElementById('kontenTipe').value);
+    fd.append('isi',      document.getElementById('kontenIsi').value.trim());
+    fd.append('is_aktif', document.getElementById('kontenAktif').checked ? 1 : 0);
+    const file = document.getElementById('kontenGambar').files[0];
+    if (file) fd.append('gambar', file);
+    const token  = localStorage.getItem('zz_token');
+    const url    = id ? '/api/konten/' + id : '/api/konten';
+    const method = id ? 'PUT' : 'POST';
+    const res    = await fetch(url, { method, headers:{'Authorization':'Bearer '+token}, body: fd });
+    const data   = await res.json();
+    if (!res.ok) { alert(data.message || 'Gagal menyimpan.'); return; }
+    alert(id ? 'Konten berhasil diperbarui!' : 'Konten berhasil ditambahkan!');
+    resetKontenForm(); loadKonten();
+  }
+
+  function deleteKonten(id) {
+    if (!confirm('Hapus konten ini? Konten akan hilang dari website.')) return;
+    // BUG-FIX: gunakan fetch langsung agar loadKonten() selalu dipanggil,
+    // termasuk saat apiReq alert error (non-ok response tetap reload list)
+    const token = localStorage.getItem('zz_token');
+    fetch('/api/konten/' + id, {
+      method: 'DELETE',
+      headers: { 'Authorization': 'Bearer ' + token }
+    }).then(async res => {
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) { alert(data.message || 'Gagal menghapus konten.'); }
+      loadKonten(); // selalu reload list
+    }).catch(() => {
+      alert('Tidak dapat terhubung ke server.');
+      loadKonten();
+    });
+  }
+
+  // ---- STAFF PRODUK ----
+  function loadStaffProduk() {
+    const grid = document.getElementById('staffProdukGrid');
+    grid.innerHTML = '<div class="loading-spinner">Memuat...</div>';
+    apiGet('/api/produk').then(data => {
+      if (!data.data || !data.data.length) { grid.innerHTML = '<p>Belum ada produk.</p>'; return; }
+      grid.innerHTML = data.data.map(p => `
+        <div class="menu-card">
+          <div class="menu-card-img">${p.gambar ? `<img src="/uploads/${p.gambar}" alt="${p.nama}"/>` : '<div class="img-fallback">🍲</div>'}</div>
+          <div class="menu-card-body">
+            <h4>${p.nama}</h4><p>${p.deskripsi||''}</p>
+            <span class="price">Rp ${Number(p.harga).toLocaleString('id-ID')}</span>
+            <div class="card-actions">
+              <button class="btn-sm" onclick="openStaffProdukModal(${JSON.stringify(p).replace(/"/g,'&quot;')})">Edit</button>
+              <button class="btn-sm btn-danger" onclick="deleteStaffProduk(${p.id_produk})">Hapus</button>
+            </div>
+          </div>
+        </div>`).join('');
+    });
+  }
+
+  function openStaffProdukModal(p) {
+    if (p && typeof p === 'object') {
+      document.getElementById('staffEditProdukId').value  = p.id_produk;
+      document.getElementById('sProdukNama').value        = p.nama;
+      document.getElementById('sProdukDeskripsi').value   = p.deskripsi||'';
+      document.getElementById('sProdukHarga').value       = p.harga;
+      document.getElementById('sProdukKategori').value    = p.kategori||'Soup';
+      document.getElementById('sProdukTopMenu').checked   = !!p.is_top_menu;
+      document.getElementById('staffProdukTitle').textContent = 'Edit Menu';
+    } else {
+      document.getElementById('staffEditProdukId').value = '';
+      ['sProdukNama','sProdukDeskripsi','sProdukHarga'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('sProdukTopMenu').checked = false;
+      document.getElementById('staffProdukTitle').textContent = 'Tambah Menu';
+    }
+    document.getElementById('staffProdukModal').style.display = 'flex';
+  }
+
+  async function saveStaffProduk() {
+    const id = document.getElementById('staffEditProdukId').value;
+    const nama = document.getElementById('sProdukNama').value.trim();
+    if (!nama) { alert('Nama menu wajib diisi.'); return; }
+    const fd = new FormData();
+    fd.append('nama',        nama);
+    fd.append('deskripsi',   document.getElementById('sProdukDeskripsi').value.trim());
+    fd.append('harga',       document.getElementById('sProdukHarga').value);
+    fd.append('kategori',    document.getElementById('sProdukKategori').value);
+    fd.append('is_top_menu', document.getElementById('sProdukTopMenu').checked ? 1 : 0);
+    const file = document.getElementById('sProdukGambar').files[0];
+    if (file) fd.append('gambar', file);
+    const token  = localStorage.getItem('zz_token');
+    const url    = id ? '/api/produk/' + id : '/api/produk';
+    const method = id ? 'PUT' : 'POST';
+    const res    = await fetch(url, { method, headers:{'Authorization':'Bearer '+token}, body: fd });
+    const data   = await res.json();
+    if (!res.ok) { alert(data.message || 'Gagal.'); return; }
+    document.getElementById('sProdukGambar').value = '';
+    closeModal('staffProdukModal');
+    setTimeout(() => loadStaffProduk(), 100);
+  }
+
+  function deleteStaffProduk(id) {
+    if (!confirm('Hapus produk ini?')) return;
+    apiReq('DELETE', '/api/produk/' + id).then(() => loadStaffProduk());
+  }
+</script>
+</body>
+</html>

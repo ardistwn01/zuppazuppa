@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Menu – ZuppaZuppa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" 
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../css/style.css"/>
+</head>
+<body>
+
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+       <img src="../assets/logo-soup.png" alt="ZuppaZuppa Logo" class="nav-logo-img"/>
+        ZuppaZuppa
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="menu.html" class="active">Menu</a></li>
+      <li><a href="about.html">About Us</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="login.html" class="btn-outline">Login</a>
+      <a href="https://wa.me/6281234567890?text=Halo%20ZuppaZuppa%2C%20saya%20ingin%20memesan" target="_blank" class="btn-primary">Order Now</a>
+    </div>
+  </div>
+<div class="menu-toggle">☰</div></nav>
+
+<main class="page-content">
+  <div class="container">
+    <h1 class="page-title fade-in">Menu</h1>
+    <div id="menuContent">
+      <div class="loading-spinner">Memuat menu...</div>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <span class="footer-brand">ZuppaZuppa</span>
+    <div class="footer-hours"><strong>Operating Hours</strong><br/>(15.00 – Close)</div>
+    <div class="footer-social">
+
+  <div class="social-icons">
+    <a href="https://instagram.com/zuppazuppa.id"
+       target="_blank"
+       aria-label="Instagram"
+       class="social-link">
+      <i class="fab fa-instagram"></i>
+    </a>
+
+    <a href="https://wa.me/6282180648025"
+       target="_blank"
+       aria-label="WhatsApp"
+       class="social-link">
+      <i class="fab fa-whatsapp"></i>
+    </a>
+  </div>
+
+  <p>&copy; 2026 ZuppaZuppa</p>
+</div>
+  </div>
+</footer>
+
+<script src="../js/main.js"></script>
+<script>
+  // Kategori urutan tampil
+  const kategoriOrder = ['Soup','Pasta','Zuppa','Snack','Steak','Nasi Goreng'];
+
+  fetch('/api/produk?is_aktif=1')
+    .then(r => r.json()).then(data => {
+      renderMenu(data.data || []);
+    }).catch(() => {
+      // Dummy fallback
+      const dummy = [];
+      const cats = ['Soup','Pasta','Snack'];
+      cats.forEach(cat => {
+        for(let i=0;i<3;i++) dummy.push({id_produk: Math.random(), nama:'Zuppa Soup', deskripsi:'Soup Cream dengan Topping Irisan Ayam, Jagung dan Daging Asap Yang Creamy', harga:22000, kategori:cat, gambar:null});
+      });
+      renderMenu(dummy);
+    });
+
+  function renderMenu(products) {
+    const container = document.getElementById('menuContent');
+    if (!products.length) { container.innerHTML = '<p class="empty-msg">Menu belum tersedia.</p>'; return; }
+
+    // Group by kategori
+    const grouped = {};
+    products.forEach(p => {
+      const cat = p.kategori || 'Lainnya';
+      if (!grouped[cat]) grouped[cat] = [];
+      grouped[cat].push(p);
+    });
+
+    // Sort categories
+    const sortedCats = Object.keys(grouped).sort((a,b) => {
+      const ia = kategoriOrder.indexOf(a), ib = kategoriOrder.indexOf(b);
+      if (ia === -1 && ib === -1) return a.localeCompare(b);
+      if (ia === -1) return 1; if (ib === -1) return -1;
+      return ia - ib;
+    });
+
+    container.innerHTML = sortedCats.map(cat => `
+      <div class="menu-section fade-in">
+        <h2 class="category-title">${cat}</h2>
+        <div class="menu-grid">
+          ${grouped[cat].map(p => `
+            <div class="menu-card">
+              <div class="menu-card-img">
+                ${p.gambar ? `<img src="/uploads/${p.gambar}" alt="${p.nama}"/>` : '<div class="img-fallback">🍲</div>'}
+              </div>
+              <div class="menu-card-body">
+                <h4>${p.nama}</h4>
+                <p>${p.deskripsi || ''}</p>
+                <span class="price">Rp. ${Number(p.harga).toLocaleString('id-ID')}</span>
+              </div>
+            </div>`).join('')}
+        </div>
+      </div>`).join('');
+  }
+</script>
+</body>
+</html>

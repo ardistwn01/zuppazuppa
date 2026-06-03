@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard Admin – ZuppaZuppa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../css/style.css"/>
+  <link rel="stylesheet" href="../css/dashboard.css"/>
+</head>
+<body class="dashboard-body">
+
+<div class="dashboard-wrap">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">ZuppaZuppa</div>
+    <nav class="sidebar-nav">
+      <a href="#log"      class="s-link active" data-tab="log">📋 Log Aktivitas</a>
+      <a href="#users"    class="s-link" data-tab="users">👥 Kelola Pengguna</a>
+      <a href="#testimoni" class="s-link" data-tab="testimoni">💬 Kelola Testimoni</a>
+    <div class="menu-toggle">☰</div></nav>
+    <div class="sidebar-footer">
+      <span id="sidebarUser">Admin</span>
+      <button onclick="logout()" class="btn-logout">Logout</button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="dashboard-main">
+    <div class="dash-header">
+      <h1 id="dashTitle">Log Aktivitas</h1>
+    </div>
+
+    <!-- TAB: LOG AKTIVITAS -->
+    <section class="tab-panel active" id="tab-log">
+      <div class="panel-toolbar log-toolbar">
+        <div class="log-date-wrap">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+          <label for="filterTanggal">Filter Tanggal</label>
+          <input type="date" id="filterTanggal" onchange="loadLog()"/>
+          <button class="log-clear-btn" id="logClearBtn" onclick="document.getElementById('filterTanggal').value='';loadLog();document.getElementById('logClearBtn').style.display='none';" style="display:none;" title="Hapus filter">✕</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="dash-table">
+          <thead><tr><th>Waktu</th><th>Aktivitas</th><th>User</th></tr></thead>
+          <tbody id="logBody"><tr><td colspan="3" class="loading-row">Memuat...</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TAB: KELOLA PENGGUNA -->
+    <section class="tab-panel" id="tab-users">
+      <div class="panel-toolbar">
+        <button class="btn-primary btn-sm" onclick="openUserModal()">+ Tambah Pengguna</button>
+      </div>
+      <div class="table-wrap">
+        <table class="dash-table">
+          <thead><tr><th>Username</th><th>Role</th><th>Aksi</th></tr></thead>
+          <tbody id="userBody"><tr><td colspan="3" class="loading-row">Memuat...</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TAB: KELOLA TESTIMONI -->
+    <section class="tab-panel" id="tab-testimoni">
+      <div class="panel-toolbar">
+        <button class="btn-primary btn-sm" onclick="openTestimoniModal()">+ Tambah Testimoni</button>
+      </div>
+      <div class="table-wrap">
+        <table class="dash-table">
+          <thead><tr><th>Nama</th><th>Platform</th><th>Bintang</th><th>Ulasan</th><th>Aksi</th></tr></thead>
+          <tbody id="testimoniBody"><tr><td colspan="5" class="loading-row">Memuat...</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- MODAL USER -->
+<div class="modal-overlay" id="userModal" style="display:none;">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeModal('userModal')">✕</button>
+    <h3 id="userModalTitle">Tambah Pengguna</h3>
+    <input type="hidden" id="editUserId"/>
+    <div class="form-group">
+      <input type="text" id="newUsername" placeholder="Username" autocomplete="off"/>
+    </div>
+    <div class="form-group pw-group">
+      <input type="password" id="newPassword" placeholder="Password (kosongkan jika tidak diubah)" autocomplete="new-password"/>
+      <button type="button" class="pw-toggle" onclick="togglePw('newPassword', this)" tabindex="-1" title="Lihat password">
+        <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="18" height="18">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+        </svg>
+        <svg class="eye-off-icon" style="display:none;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="18" height="18">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"/>
+        </svg>
+      </button>
+    </div>
+    <div class="form-group">
+      <select id="newRole">
+        <option value="staff_marketing">Staff Marketing</option>
+        <option value="admin">Admin</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeModal('userModal')">Batal</button>
+      <button class="btn-primary" onclick="saveUser()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL TAMBAH/EDIT TESTIMONI -->
+<div class="modal-overlay" id="testimoniModal" style="display:none;">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeModal('testimoniModal')">✕</button>
+    <h3 id="testimoniModalTitle">Tambah Testimoni</h3>
+    <input type="hidden" id="editTestimoniId"/>
+    <div class="form-group">
+      <label>Nama Pelanggan</label>
+      <input type="text" id="tNama" placeholder="Nama pelanggan"/>
+    </div>
+    <div class="form-group">
+      <label>Platform Sumber</label>
+      <select id="tPlatform">
+        <option value="Google Maps">Google Maps</option>
+        <option value="GoFood">GoFood</option>
+        <option value="GrabFood">GrabFood</option>
+        <option value="Lainnya">Lainnya</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Rating Bintang</label>
+      <select id="tBintang">
+        <option value="5">★★★★★ (5)</option>
+        <option value="4">★★★★☆ (4)</option>
+        <option value="3">★★★☆☆ (3)</option>
+        <option value="2">★★☆☆☆ (2)</option>
+        <option value="1">★☆☆☆☆ (1)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Isi Ulasan</label>
+      <textarea id="tIsi" placeholder="Salin ulasan dari Google Maps / GoFood / GrabFood di sini..." rows="4"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeModal('testimoniModal')">Batal</button>
+      <button class="btn-primary" onclick="saveTestimoni()">Simpan</button>
+    </div>
+  </div>
+</div>
+<script src="../js/main.js"></script>
+<script src="../js/dashboard.js"></script>
+<script>
+  requireAuth('admin');
+
+  function togglePw(inputId, btn) {
+    const input = document.getElementById(inputId);
+    const isHidden = input.type === 'password';
+    input.type = isHidden ? 'text' : 'password';
+    btn.querySelector('.eye-icon').style.display    = isHidden ? 'none'  : '';
+    btn.querySelector('.eye-off-icon').style.display = isHidden ? ''     : 'none';
+  }
+
+  // Tab navigation
+  document.querySelectorAll('.s-link').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const tab = link.dataset.tab;
+      document.querySelectorAll('.s-link').forEach(l => l.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      link.classList.add('active');
+      document.getElementById('tab-' + tab).classList.add('active');
+      document.getElementById('dashTitle').textContent = link.textContent.slice(3);
+      if (tab === 'log')       loadLog();
+      if (tab === 'users')     loadUsers();
+      if (tab === 'produk')    loadAdminProduk();
+      if (tab === 'testimoni') loadTestimoni();
+    });
+  });
+
+  // Initial load
+  loadLog();
+
+  // ---- LOG ----
+  function loadLog() {
+    const tgl     = document.getElementById('filterTanggal').value;
+    const clearBtn = document.getElementById('logClearBtn');
+    if (clearBtn) clearBtn.style.display = tgl ? 'inline-flex' : 'none';
+    apiGet('/api/log' + (tgl ? '?tanggal=' + tgl : '')).then(data => {
+      const body = document.getElementById('logBody');
+      if (!data.data || !data.data.length) {
+        body.innerHTML = `<tr><td colspan="3" class="loading-row">${tgl ? 'Tidak ada log pada tanggal ini.' : 'Belum ada aktivitas.'}</td></tr>`;
+        return;
+      }
+      body.innerHTML = data.data.map(l => `
+        <tr><td>${fmtDate(l.waktu)}</td><td>${l.aktivitas}</td><td>${l.username || '-'}</td></tr>`).join('');
+    });
+  }
+
+  // ---- USERS ----
+  function loadUsers() {
+    apiGet('/api/pengguna').then(data => {
+      const body = document.getElementById('userBody');
+      if (!data.data || !data.data.length) { body.innerHTML = '<tr><td colspan="3">Tidak ada pengguna.</td></tr>'; return; }
+      body.innerHTML = data.data.map(u => `
+        <tr>
+          <td>${u.username}</td>
+          <td><span class="badge ${u.role}">${u.role}</span></td>
+          <td>
+            <button class="btn-sm" onclick="openUserModal(${u.id_user},'${u.username}','${u.role}')">Edit</button>
+            <button class="btn-sm btn-danger" onclick="deleteUser(${u.id_user})">Hapus</button>
+          </td>
+        </tr>`).join('');
+    });
+  }
+
+  function openUserModal(id, uname, role) {
+    // Kalau dipanggil tanpa argumen = Tambah baru
+    const isEdit = id !== undefined && id !== null && id !== '';
+    document.getElementById('editUserId').value   = isEdit ? id : '';
+    document.getElementById('newUsername').value  = uname || '';
+    document.getElementById('newPassword').value  = '';
+    document.getElementById('newRole').value      = role || 'staff_marketing';
+    document.getElementById('userModalTitle').textContent = isEdit ? 'Edit Pengguna' : 'Tambah Pengguna';
+    // Kalau edit, beri hint password opsional
+    const pwInput = document.getElementById('newPassword');
+    pwInput.placeholder = isEdit ? 'Password baru (kosongkan jika tidak diubah)' : 'Password';
+    document.getElementById('userModal').style.display = 'flex';
+  }
+
+  function saveUser() {
+    const id   = document.getElementById('editUserId').value;
+    const username = document.getElementById('newUsername').value.trim();
+    const pass = document.getElementById('newPassword').value;
+    if (!username) { alert('Username wajib diisi.'); return; }
+    // Kalau tambah baru, password wajib
+    if (!id && !pass) { alert('Password wajib diisi untuk pengguna baru.'); return; }
+    const body = {
+      username,
+      role: document.getElementById('newRole').value,
+    };
+    if (pass) body.password = pass;
+    const method = id ? 'PUT' : 'POST';
+    const url    = id ? '/api/pengguna/' + id : '/api/pengguna';
+    apiReq(method, url, body).then(res => {
+      if (res && res.ok) { closeModal('userModal'); setTimeout(() => loadUsers(), 100); }
+    });
+  }
+
+  function deleteUser(id) {
+    if (!confirm('Hapus pengguna ini?')) return;
+    apiReq('DELETE', '/api/pengguna/' + id).then(() => loadUsers());
+  }
+
+  // ---- TESTIMONI ----
+  function loadTestimoni() {
+    apiGet('/api/testimoni/all').then(data => {
+      const body = document.getElementById('testimoniBody');
+      if (!data.data || !data.data.length) {
+        body.innerHTML = '<tr><td colspan="5" class="loading-row">Belum ada testimoni. Klik "+ Tambah Testimoni" untuk menambahkan.</td></tr>';
+        return;
+      }
+      body.innerHTML = data.data.map(t => `
+        <tr>
+          <td>${t.nama}</td>
+          <td><span class="badge" style="background:#f0ebe3;color:#5a3e2b;font-size:0.75rem;padding:3px 8px;border-radius:4px;">${t.platform || 'Lainnya'}</span></td>
+          <td style="color:var(--maroon);">${'★'.repeat(t.bintang)}${'☆'.repeat(5-t.bintang)}</td>
+          <td style="max-width:260px;">${t.isi}</td>
+          <td style="white-space:nowrap;">
+            <button class="btn-sm" onclick='openTestimoniModal(${JSON.stringify(t)})'>Edit</button>
+            <button class="btn-sm btn-danger" onclick="deleteTestimoni(${t.id_testimoni})">Hapus</button>
+          </td>
+        </tr>`).join('');
+    });
+  }
+
+  function openTestimoniModal(t) {
+    document.getElementById('editTestimoniId').value  = '';
+    document.getElementById('tNama').value            = '';
+    document.getElementById('tPlatform').value        = 'Google Maps';
+    document.getElementById('tBintang').value         = '5';
+    document.getElementById('tIsi').value             = '';
+    document.getElementById('testimoniModalTitle').textContent = 'Tambah Testimoni';
+    if (t && typeof t === 'object') {
+      document.getElementById('editTestimoniId').value  = t.id_testimoni;
+      document.getElementById('tNama').value            = t.nama;
+      document.getElementById('tPlatform').value        = t.platform || 'Google Maps';
+      document.getElementById('tBintang').value         = t.bintang;
+      document.getElementById('tIsi').value             = t.isi;
+      document.getElementById('testimoniModalTitle').textContent = 'Edit Testimoni';
+    }
+    document.getElementById('testimoniModal').style.display = 'flex';
+  }
+
+  async function saveTestimoni() {
+    const id   = document.getElementById('editTestimoniId').value;
+    const nama = document.getElementById('tNama').value.trim();
+    const isi  = document.getElementById('tIsi').value.trim();
+    if (!nama || !isi) { alert('Nama dan ulasan wajib diisi.'); return; }
+    const body = {
+      nama,
+      isi,
+      bintang:  parseInt(document.getElementById('tBintang').value) || 5,
+      platform: document.getElementById('tPlatform').value,
+    };
+    const method = id ? 'PUT' : 'POST';
+    const url    = id ? '/api/testimoni/' + id : '/api/testimoni/admin';
+    try {
+      const token = localStorage.getItem('zz_token');
+      const res   = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+      if (!res.ok) { alert('Gagal: ' + (data.message || 'Server error.')); return; }
+      closeModal('testimoniModal');
+      setTimeout(() => loadTestimoni(), 100);
+    } catch (e) {
+      alert('Terjadi error koneksi. Pastikan server berjalan.');
+    }
+  }
+
+  function deleteTestimoni(id) {
+    if (!confirm('Hapus testimoni ini?')) return;
+    apiReq('DELETE', '/api/testimoni/' + id).then(res => {
+      if (res && res.ok) loadTestimoni();
+    });
+  }
+</script>
+</body>
+</html>
