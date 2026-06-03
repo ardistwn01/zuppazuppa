@@ -15,12 +15,9 @@ app.use(compression());
 // ---- Middleware ----
 app.use(cors({
   origin: [
-    `http://localhost:${PORT}`,
-    `http://127.0.0.1:${PORT}`,
+    'https://zuppazuppa.vercel.app',
     'http://localhost:3000',
-    'http://127.0.0.1:3000',
-    'http://localhost:5500',
-    'http://127.0.0.1:5500',
+    'http://127.0.0.1:3000'
   ],
   credentials: true,
 }));
