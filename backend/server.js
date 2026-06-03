@@ -16,8 +16,11 @@ app.use(compression());
 app.use(cors({
   origin: [
     'https://zuppazuppa.vercel.app',
+    'https://zuppazuppa-production-4bf0.up.railway.app',
     'http://localhost:3000',
-    'http://127.0.0.1:3000'
+    'http://127.0.0.1:3000',
+    'http://localhost:5500',
+    'http://127.0.0.1:5500',
   ],
   credentials: true,
 }));

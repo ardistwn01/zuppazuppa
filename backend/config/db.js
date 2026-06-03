@@ -3,12 +3,13 @@ const mysql = require('mysql2/promise');
 require('dotenv').config();
 
 // BUG-010 FIX: connectionLimit dibaca dari environment variable
+// Support Railway MySQL variable names (MYSQLHOST, etc.) AND custom DB_* names
 const pool = mysql.createPool({
-  host:               process.env.DB_HOST              || 'localhost',
-  port:               parseInt(process.env.DB_PORT)     || 3306,
-  user:               process.env.DB_USER              || 'root',
-  password:           process.env.DB_PASSWORD          || '',
-  database:           process.env.DB_NAME              || 'zuppazuppa_db',
+  host:               process.env.DB_HOST     || process.env.MYSQLHOST     || 'localhost',
+  port:               parseInt(process.env.DB_PORT || process.env.MYSQLPORT) || 3306,
+  user:               process.env.DB_USER     || process.env.MYSQLUSER     || 'root',
+  password:           process.env.DB_PASSWORD || process.env.MYSQLPASSWORD || '',
+  database:           process.env.DB_NAME     || process.env.MYSQLDATABASE || 'zuppazuppa_db',
   waitForConnections: true,
   connectionLimit:    parseInt(process.env.DB_CONNECTION_LIMIT) || 10,
   queueLimit:         0,
