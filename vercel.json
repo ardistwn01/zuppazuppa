@@ -1,6 +1,22 @@
 {
     "rewrites": [
         {
+            "source": "/api/:path*",
+            "destination": "https://zuppazuppa-production.up.railway.app/api/:path*"
+        },
+        {
+            "source": "/css/:file",
+            "destination": "/frontend/css/:file"
+        },
+        {
+            "source": "/js/:file",
+            "destination": "/frontend/js/:file"
+        },
+        {
+            "source": "/assets/:file",
+            "destination": "/frontend/assets/:file"
+        },
+        {
             "source": "/",
             "destination": "/frontend/pages/index.html"
         },
@@ -23,18 +39,6 @@
         {
             "source": "/dashboard-staff",
             "destination": "/frontend/pages/dashboard-staff.html"
-        },
-        {
-            "source": "/css/:file",
-            "destination": "/frontend/css/:file"
-        },
-        {
-            "source": "/js/:file",
-            "destination": "/frontend/js/:file"
-        },
-        {
-            "source": "/assets/:file",
-            "destination": "/frontend/assets/:file"
         }
     ]
 }
