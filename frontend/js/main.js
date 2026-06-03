@@ -31,7 +31,7 @@ document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 // ---- Auth helpers ----
 function requireAuth(requiredRole) {
   const token = localStorage.getItem('zz_token');
-  if (!token) { window.location.href = 'login.html'; return; }
+  if (!token) { window.location.href = '/login'; return; }
 
   // Baca role dari JWT payload langsung, bukan localStorage
   // supaya tidak bisa dimanipulasi dengan ubah localStorage
@@ -43,19 +43,19 @@ function requireAuth(requiredRole) {
       localStorage.removeItem('zz_token');
       localStorage.removeItem('zz_role');
       localStorage.removeItem('zz_user');
-      window.location.href = 'login.html'; return;
+      window.location.href = '/login'; return;
     }
     roleFromToken = payload.role;
     // Sinkronkan localStorage dengan role asli dari token
     localStorage.setItem('zz_role', roleFromToken);
   } catch (e) {
     // Token corrupt
-    window.location.href = 'login.html'; return;
+    window.location.href = '/login'; return;
   }
 
   if (requiredRole && roleFromToken !== requiredRole) {
     alert('Akses ditolak. Role kamu: ' + roleFromToken);
-    window.location.href = roleFromToken === 'admin' ? 'dashboard-admin.html' : 'dashboard-staff.html';
+    window.location.href = roleFromToken === 'admin' ? '/dashboard-admin' : '/dashboard-staff';
     return;
   }
 
@@ -76,7 +76,7 @@ async function logout() {
   localStorage.removeItem('zz_token');
   localStorage.removeItem('zz_role');
   localStorage.removeItem('zz_user');
-  window.location.href = 'login.html';
+  window.location.href = '/login';
 }
 
 // ---- API helpers ----

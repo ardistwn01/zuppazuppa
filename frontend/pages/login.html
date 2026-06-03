@@ -14,7 +14,7 @@
 <div class="login-bg">
   <div class="login-page-header">
     <span>LOGIN</span>
-    <a href="index.html" class="login-back">✕ Kembali ke Website</a>
+    <a href="/" class="login-back">✕ Kembali ke Website</a>
   </div>
 
   <div class="login-center">
@@ -55,7 +55,7 @@
   const token = localStorage.getItem('zz_token');
   const role  = localStorage.getItem('zz_role');
   if (token) {
-    window.location.href = role === 'admin' ? 'dashboard-admin.html' : 'dashboard-staff.html';
+    window.location.href = role === 'admin' ? '/dashboard-admin' : '/dashboard-staff';
   }
 
   function toggleKode() {
@@ -104,7 +104,7 @@
       localStorage.setItem('zz_role',  data.role);
       localStorage.setItem('zz_user',  data.username);
 
-      window.location.href = data.role === 'admin' ? 'dashboard-admin.html' : 'dashboard-staff.html';
+      window.location.href = data.role === 'admin' ? '/dashboard-admin' : '/dashboard-staff';
     } catch (e) {
       showError('Tidak dapat terhubung ke server. Pastikan backend sudah berjalan.');
     } finally {
