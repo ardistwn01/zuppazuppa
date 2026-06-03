@@ -13,12 +13,15 @@ const PORT = process.env.PORT || 3000;
 app.use(compression());
 
 // ---- Middleware ----
-const allowedOrigins = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(',')
-  : ['http://localhost:3000', 'http://localhost:5500'];
-
 app.use(cors({
-  origin: allowedOrigins,
+  origin: [
+    `http://localhost:${PORT}`,
+    `http://127.0.0.1:${PORT}`,
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+    'http://localhost:5500',
+    'http://127.0.0.1:5500',
+  ],
   credentials: true,
 }));
 app.use(express.json());
