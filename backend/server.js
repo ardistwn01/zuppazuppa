@@ -58,10 +58,10 @@ app.use('/api', apiRoutes);
 
 // ---- 404 fallback ----
 app.use((req, res) => {
-  if (req.path.startsWith('/api')) {
-    return res.status(404).json({ message: 'Endpoint tidak ditemukan.' });
+  if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) {
+    return res.status(404).json({ message: 'Resource tidak ditemukan.' });
   }
-  // Redirect ke halaman utama jika bukan API
+  // Redirect ke halaman utama jika bukan API atau uploads
   res.sendFile(path.join(frontendDir, 'pages', 'index.html'));
 });
 
